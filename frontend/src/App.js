@@ -7,6 +7,7 @@ import Translate from './components/translate/Translate';
 import Hero from './components/hero/Hero';
 import Test from './components/test/test';
 import Texttosign from './components/text2sign/Texttosign';
+import About from './components/about/About';
 
 function App() {
   const [backendResponse, setBackendResponse] = useState('');
@@ -32,6 +33,7 @@ console.log("backend url is ",backendUrl)
       <Routes>
         <Route path='/' element={<Hero/>}/>
         <Route path='/translate' element={<Translate/>}/>
+        <Route path='/about' element={<About/>}/>
         <Route path='/texttosign' element={<Texttosign/>}/>
         <Route path='/test' element={<Test/>}/>
       </Routes>

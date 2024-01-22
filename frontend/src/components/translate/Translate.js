@@ -29,29 +29,37 @@ const Translate = () => {
   async function startCapturingFrames() {
     if (webcamInstance) {
       // Start capturing frames from the webcam
-      webcamInstance.start();
-      // Continuously send frames to the backend
-      setInterval(() => {
-        if (webcamRef.current && webcamRef.current.video && webcamRef.current.video.videoWidth) {
-          const video = webcamRef.current.video;
-          const canvas = document.createElement('canvas');
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          const frameData = canvas.toDataURL('image/jpeg'); // Convert frame to base64 or Blob
-          sendFrameToBackend(frameData);
-        }
-      }, 1000); // Adjust interval as needed (e.g., every 100ms)
+      try {
+        webcamInstance.start();
+        // Continuously send frames to the backend
+        setInterval(() => {
+          if (
+            webcamRef.current &&
+            webcamRef.current.video &&
+            webcamRef.current.video.videoWidth
+          ) {
+            const video = webcamRef.current.video;
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const frameData = canvas.toDataURL("image/jpeg"); // Convert frame to base64 or Blob
+            sendFrameToBackend(frameData);
+          }
+        }, 1000); // Adjust interval as needed (e.g., every 100ms)
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
   const sendFrameToBackend = async (frameData) => {
     try {
       await axios.post(`${backendUrl}/process_frame`, { frameData });
-      console.log("frames sent to backend ")
+      console.log("frames sent to backend ");
       // Handle response or update UI as needed
     } catch (error) {
-      console.error('Error sending frame:', error);
+      console.error("Error sending frame:", error);
     }
   };
 
@@ -63,11 +71,11 @@ const Translate = () => {
     const getModel = async () => {
       try {
         const response = await axios.get(`${backendUrl}/get_model`, {
-          responseType: 'blob', // Set response type to blob to handle binary data (like the model file)
+          responseType: "blob", // Set response type to blob to handle binary data (like the model file)
         });
-        console.log("The model is loaded",response)
+        console.log("The model is loaded", response);
       } catch (error) {
-        console.error('Error fetching the model:', error);
+        console.error("Error fetching the model:", error);
       }
     };
 
@@ -76,14 +84,13 @@ const Translate = () => {
       try {
         const modelData = await axios.get(`${backendUrl}/load_data`);
         // Handle the loaded data, for example, setting it to a state variable
-        console.log("the data is loaded",modelData); // Log the data received from the server
+        console.log("the data is loaded", modelData); // Log the data received from the server
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.error("Error loading data:", error);
       }
     };
-  
+
     loadData();
-    
   }, []);
   const [predictionText, setPredictionText] = useState(
     "This is my prediction Output area"
@@ -94,9 +101,11 @@ const Translate = () => {
       videoPopupRef.current.style.display = "none";
       videoPopupVisible = false;
     } else if (!videoPopupVisible && webcamInstance) {
+      try{
       webcamInstance.start();
       videoPopupRef.current.style.display = "block";
       videoPopupVisible = true;
+    }catch(error){console.error(error)}
     }
   };
   const clearPrediction = () => {
@@ -106,6 +115,7 @@ const Translate = () => {
   const [buttonText, setButtonText] = useState("Start");
 
   const handleStartBtn = () => {
+    try{
     setShowWebcam((prevShowWebcam) => !prevShowWebcam);
     toggleVideoPopup();
     setButtonText((prevButtonText) =>
@@ -114,11 +124,12 @@ const Translate = () => {
     if (!showWebcam) {
       // Start capturing frames when "Start" button is clicked
       const intervalId = startCapturingFrames();
-      setFrameInterval(intervalId); // Set the intervalId in state
+      // setFrameInterval(intervalId); // Set the intervalId in state
     } else {
       // Stop capturing frames when "Stop" button is clicked
-      clearInterval(frameInterval);
+      // clearInterval(frameInterval);
     }
+  }catch(error){console.error(error);}
   };
   return (
     <div className="translate">

@@ -16,7 +16,8 @@ const Hero = () => {
     <div className="hero">
       <div className="left-container">
         <div className="leftContent">
-          <h1 className="headerText">Sign To Text Model</h1>
+          <h1 className="headerText">Digital Interpreter</h1>
+          {/* <h1 className="headerText">Sign To Text Model</h1> */}
           <p className="textContainer">
             A machine Learning model that helps people translate sign language
             to text{" "}
